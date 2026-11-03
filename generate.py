@@ -3,9 +3,9 @@ from zoneinfo import ZoneInfo
 from PIL import Image, ImageDraw, ImageFont
 
 # ---- Einstellungen ----
-STICHTAG = date(2027, 1, 1)
-TEXT_FARBE = (31, 56, 100)       # Dunkelblau
-ZAHL_FARBE = (192, 57, 43)       # Rot
+STICHTAG = date(2028, 9, 1)
+TEXT_FARBE = (58, 170, 53)       # Grün
+ZAHL_FARBE = (58, 170, 53)       # Grün
 HINTERGRUND = (255, 255, 255, 0) # transparent; für Weiß: (255, 255, 255, 255)
 AUSGABE = "docs/countdown.png"
 SCALE = 2                        # 2x für scharfe Darstellung (Retina)
@@ -24,13 +24,15 @@ heute = datetime.now(ZoneInfo("Europe/Berlin")).date()
 tage = (STICHTAG - heute).days
 
 if tage > 1:
-    teile = [("Noch ", False), (str(tage), True), (f" Tage bis {STICHTAG:%d.%m.%Y}", False)]
+    teile = [(str(tage), True), (" Tage noch", False)]
 elif tage == 1:
-    teile = [("Noch ", False), ("1", True), (f" Tag bis {STICHTAG:%d.%m.%Y}", False)]
+    teile = [("1", True), (" Tag noch!", False)]
 elif tage == 0:
-    teile = [("Heute ist der Stichtag!", True)]
+    teile = [("Es ist soweit!", True)]
 else:
-    teile = [(f"Stichtag {STICHTAG:%d.%m.%Y} erreicht", False)]
+    vergangen = abs(tage)
+    einheit = "Tag" if vergangen == 1 else "Tagen"
+    teile = [("Seit ", False), (str(vergangen), True), (f" {einheit} ist es soweit", False)]
 
 W, H = 360 * SCALE, 30 * SCALE
 img = Image.new("RGBA", (W, H), HINTERGRUND)
